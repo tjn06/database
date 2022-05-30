@@ -1,0 +1,240 @@
+-- Insert queries
+
+db.recipes.insertOne(
+    {
+        recipeName: "Kladdkaka",
+        portions: "8 bitar",
+        category: "dessert",
+        ingredients: [
+            {
+                measurement: "100 g",
+                name: "smör"
+            },
+            {
+                measurement : "2 st",
+                name : "ägg"
+            },
+            {
+                measurement: "2 1/2 dl",
+                name: "strösocker"
+            },
+            {
+                measurement: "3 msk",
+                name: "kakao"
+            },
+            {
+                measurement: "2 tsk",
+                name: "vaniljsocker"
+            },
+            {
+                measurement: "1 1/2 dl",
+                name: "vetemjöl"
+            },
+            {
+                measurement: "1 krm",
+                name: "salt"
+            }
+        ]
+    }
+)
+
+db.recipes.insertMany([
+    {
+        recipeName: "Blåbärsmuffins",
+        portions: "12 st",
+        category: "pastry",
+        ingredients: [
+            {
+                measurement: "4 dl",
+                name: "vetemjöl"
+            },
+            {
+                measurement : "2 dl",
+                name : "strösocker"
+            },
+            {
+                measurement: "2 krm",
+                name: "salt"
+            },
+            {
+                measurement: "2 tsk",
+                name: "bakpulver"
+            },
+            {
+                measurement: "100 g",
+                name: "smält smör"
+            },
+            {
+                measurement: "1 dl",
+                name: "mjölk"
+            },
+            {
+                measurement: "2 st",
+                name: "ägg"
+            },
+                        {
+                measurement: "2 dl",
+                name: "frysta blåbär"
+            }
+        ]
+    },
+    {
+        recipeName: "Kanelbullar",
+        portions: "20 st",
+        category: "pastry",
+        ingredients: [
+            {
+                measurement: "50 g",
+                name: "jäst"
+            },
+            {
+                measurement : "100 g",
+                name : "smör"
+            },
+            {
+                measurement: "3 dl",
+                name: "mjölk"
+            },
+            {
+                measurement: "1 dl",
+                name: "strösocker"
+            },
+            {
+                measurement: "1 krm",
+                name: "salt"
+            },
+            {
+                measurement: "8 dl",
+                name: "vetemjöl"
+            },
+            {
+                measurement: "50 g krm",
+                name: "salt"
+            },
+            {
+                measurement: "2 tsk",
+                name: "kanel"
+            },
+            {
+                measurement: "1 st",
+                name: "ägg"
+            },
+            {
+                measurement: "5 msk",
+                name: "pärlsocker"
+            }
+        ]
+    },
+    {
+        recipeName: "Scones",
+        portions: "8 bitar",
+        category: "bread",
+        ingredients: [
+            {
+                measurement: "4 dl",
+                name: "vetemjöl"
+            },
+            {
+                measurement : "2 tsk",
+                name : "bakpulver"
+            },
+            {
+                measurement: "2 krm",
+                name: "salt"
+            },
+            {
+                measurement: "50 g",
+                name: "smör"
+            },
+            {
+                measurement: "2 dl",
+                name: "mjölk"
+            }
+        ]
+    }
+])
+
+-- End insert queries
+
+
+
+-- Update queries 
+db.recipes.updateOne(
+   { recipeName: "Kladdkaka" },
+   {
+     $set: { tidMin: 45 }
+   }
+)
+db.recipes.updateOne(
+   { recipeName: "Blåbärsmuffins" },
+   {
+     $set: { tidMin: 30 }
+   }
+)
+db.recipes.updateOne(
+   { recipeName: "Kanelbullar" },
+   {
+     $set: { tidMin: 60 }
+   }
+)
+db.recipes.updateOne(
+   { recipeName: "Scones" },
+   {
+     $set: { tidMin: 30 }
+   }
+)
+
+db.recipes.updateMany(
+   { },
+   {
+     $set: { instructions: "..." }
+   }
+)
+
+*1. Uppdatera så att alla recept får relevant key:value för att sedan kunna spara ett recept
+som en favorit.
+db.recipes.updateMany(
+   { },
+   {
+     $set: { favourite: false }
+   }
+)
+*2. Skriva kod så att minst ett specifikt recept nu blir som en favorit
+db.recipes.updateOne({ recipeName: "Scones"}, {$set: {favourite: true} })
+
+-- End update queries 
+
+
+--Find queries 
+
+*3. Räkna alla recept som är markerade som en favorit.
+db.recipes.find({favourite: true}).count()
+
+4. Visa alla recept som är markerade som en favorit.
+db.recipes.find({ favourite: true })
+
+db.recipes.find({}).pretty()
+
+*Du ska kunna söka på något specifikt för ett recept t ex kategori.
+db.recipes.find( { recipeName: "Kladdkaka"} ).pretty()
+db.recipes.find({ category: "pastry" }).count()
+
+*Du ska kunna räkna hur många recept som finns totalt med .count()
+db.recipes.find().count()
+
+db.recipes.find( { tidMin: { $gt : 30 } } ).pretty()
+
+--End find queries 
+
+
+-- Delete queries
+
+db.recipes.deleteOne( { recipeName: "Kladdkaka" } )
+db.recipes.find({__id: ObjectID("insert id here..,"})
+
+db.recipes.deleteMany({})
+
+use recipes
+db.dropDatabase()
+
+-- End delete queries

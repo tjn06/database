@@ -1,0 +1,354 @@
+CREATE TABLE movie(
+	movieId INTEGER PRIMARY KEY,
+	movieTitle TEXT,
+	movieYear INTEGER,
+	movieGrossing REAL
+);
+
+
+CREATE TABLE theme(
+    themeId INTEGER PRIMARY KEY,
+    themeName TEXT
+);
+CREATE TABLE moviePrimaryTheme(
+    moviePrimaryThemeId INTEGER PRIMARY KEY,
+    moviePrimaryThemeMId INTEGER,
+    moviePrimaryThemeTId INTEGER
+);
+CREATE TABLE movieSubTheme(
+    movieSubThemeId INTEGER PRIMARY KEY,
+    movieSubThemeMId INTEGER,
+    movieSubThemeTId INTEGER
+);
+
+
+CREATE TABLE user(
+    userId INTEGER PRIMARY KEY,
+    userName TEXT
+);
+CREATE TABLE rateCategory(
+	rateCategoryId INTEGER PRIMARY KEY,
+	rateCategoryTitle TEXT
+);
+CREATE TABLE movieCategoryRating(
+	movieRateCategoryId INTEGER PRIMARY KEY,
+	movieRateCategoryMId INTEGER,
+	movieRateCategoryRCId INTEGER,
+	movieRateCategoryUId INTEGER,
+	voteRate INTEGER
+);
+
+
+CREATE TABLE movieCrewMember(
+    movieCrewMemberId INTEGER PRIMARY KEY,
+    movieCrewMemberMId INTEGER,
+    movieCrewMemberCMId INTEGER,
+    crewMemberCMJId INTEGER
+);
+CREATE TABLE crewMember(
+    crewMemberId INTEGER PRIMARY KEY,
+    crewMemberName TEXT
+);
+
+CREATE TABLE crewMemberJob(
+    crewMemberJobId INTEGER PRIMARY KEY,
+    crewMemberJobTitle TEXT
+);
+
+-------------------------------------------------- START OF ADDING VALUES TO TABLES
+
+-- Create Movies
+INSERT INTO movie (movieTitle, movieYear, movieGrossing)
+VALUES ('Interstellar', 2014, 701000000),('StarWars IV', 1977, 775000000),('Dune(Orig)', 1984, 38000000 );
+
+-- Update movieGross on specific movie
+UPDATE movie
+SET movieGrossing = 701000045
+WHERE movie.movieTitle = 'Interstellar';
+
+-- ALTER TABLE movie
+-- ADD moviePlot char(100);
+
+-- Create Actors (CrewMembers)
+INSERT INTO crewMember (crewMemberName)
+VALUES ('Matthew McConaughey'),('Harrison Ford'),('Max von Sydow');
+-- Create Directors (CrewMembers)
+INSERT INTO crewMember (crewMemberName)
+VALUES ('Christopher Nolan'),('George Lucas'),('David Lynch');
+-- Create Producers (CrewMembers)
+INSERT INTO crewMember (crewMemberName)
+VALUES ('Emma Thomas'),('Lucasfilm'),('Raffaella De Laurentiis');
+
+-- Create Jobs
+INSERT INTO crewMemberJob (crewMemberJobTitle)
+VALUES ('Actor'),('Director'),('Producer');
+
+-- Add Crew-members to movie with jobTitle
+INSERT INTO movieCrewMember (movieCrewMemberMId, movieCrewMemberCMId, crewMemberCMJId)
+VALUES (1,1,1),(1,4,2),(1,7,3),
+       (2,2,1),(2,5,2),(2,8,3),
+       (3,3,1),(3,6,2),(3,9,3);
+-- Add Crew-members to movie with jobTitle (multiple movies)
+INSERT INTO movieCrewMember (movieCrewMemberMId, movieCrewMemberCMId, crewMemberCMJId)
+VALUES (1,1,3),(1,7,1);
+
+-- Update Job On Matthew McConaughey in the Movie Interstellar
+UPDATE movieCrewMember
+SET crewMemberCMJId= 2
+WHERE movieCrewMemberMId=1 AND movieCrewMemberCMId = 1;
+
+
+-- Create themeNames
+INSERT INTO theme (themeName)
+VALUES ('Timetravel'),('Space'),('Ai'),('Robots'),('Science'),('Superpowers'),('Apocalypse'),('Horror'),('Adventure'),('Comedy');
+
+-- Set primaryTheme on movies
+INSERT INTO moviePrimaryTheme (moviePrimaryThemeMId, moviePrimaryThemeTId)
+VALUES (1,2),
+       (2,9),
+       (3,8);
+
+-- Set subThemes on movies
+INSERT INTO movieSubTheme (movieSubThemeMId, movieSubThemeTId)
+VALUES (1,1),(1,5),(1,7),
+       (2,2),(2,10),
+       (3,2),(3,6),(3,7);
+
+-- Create users
+INSERT INTO USER (userName)
+VALUES ('Botlof'),('Grodan Boll');
+
+-- Create rate-categorys
+INSERT INTO rateCategory (rateCategoryTitle)
+VALUES ('atmosphere'),('plot'),('consistent quality'),('characters'),('overall');
+
+-- Create movieCategoryRatings on movies with user
+INSERT INTO movieCategoryRating (movieRateCategoryMId,movieRateCategoryRCId,movieRateCategoryUId,voteRate)
+VALUES (1,1,1,4),(1,2,1,4),(1,3,1,5),(1,4,1,6),(1,5,1,8),
+       (2,1,1,4),(2,2,1,4),(2,3,1,10),(2,4,1,4),(2,5,1,3),
+       (3,1,1,6),(3,2,1,8),(3,3,1,1),(3,4,1,5),(3,5,1,9);
+-- Create movieCategoryRatings on movies with user
+INSERT INTO movieCategoryRating (movieRateCategoryMId,movieRateCategoryRCId,movieRateCategoryUId,voteRate)
+VALUES (1,1,2,3),(1,2,2,10),(1,3,2,2),(1,4,2,7),(1,5,2,5),
+       (2,1,2,1),(2,2,2,2),(2,3,2,3),(2,4,2,6),(2,5,2,4),
+       (3,1,2,10),(3,2,2,10),(3,3,2,10),(3,4,2,10),(3,5,2,10);
+
+-------------------------------------------------- END OF ADDING VALUES TO TABLES
+
+
+
+-- No of times(more than 1 time) theme is used as subTheme
+SELECT theme.themeName, COUNT(movieSubTheme.movieSubThemeId) AS noOfSubThemesAssigned FROM movieSubTheme
+LEFT JOIN theme ON movieSubTheme.movieSubThemeTId = theme.themeId
+GROUP BY themeName
+HAVING COUNT(movieSubTheme.movieSubThemeId) > 1;
+
+
+SELECT * FROM movie WHERE movieGrossing > 100000000; -- Get highGrossing-movies
+SELECT SUM(movieGrossing) AS totalGross FROM movie; -- Get totalgross, all movies
+SELECT movieTitle, movieGrossing FROM movie; -- Get specific from movie
+SELECT * FROM movie WHERE movieId = 1; -- Get movie with id
+SELECT * FROM movie WHERE movieTitle = 'Interstellar'; -- Get movie with title
+SELECT * FROM movie WHERE movieTitle LIKE '%nterstella%'; -- Match
+SELECT * FROM movie WHERE movieTitle LIKE 'r%'; -- First letter
+SELECT * FROM movie WHERE movieTitle LIKE '%r'; -- Last letter
+SELECT * FROM movie WHERE movieYear BETWEEN 1970 AND 2000; -- Between years
+SELECT * FROM movie WHERE movieYear NOT BETWEEN 1970 AND 2000; -- Not Between years
+SELECT * FROM movie WHERE movieYear = 1977 OR movieYear = 2014; -- Between years OR
+SELECT AVG(movieGrossing) AS averageGross FROM movie; -- Moviegrossing avg
+SELECT movieTitle, movieGrossing FROM movie WHERE movieGrossing<(SELECT AVG(movieGrossing) FROM movie); -- Movies < moviesAvg
+SELECT COUNT(movieId) AS amountOfMovies FROM movie; -- Total amount of  movies
+SELECT MAX(movieYear) AS latestMovie, movieTitle FROM movie ; --Latest movie, year
+SELECT MIN(movieYear) AS latestMovie, movieTitle FROM movie ; --Oldest movie, year
+ -- Movies before 2000 with subTheme space
+SELECT movie.movieTitle, movie.movieYear, theme.themeName AS 'primaryTheme'
+FROM movie
+INNER JOIN movieSubTheme
+ON movie.movieId = movieSubTheme.movieSubThemeMId
+INNER JOIN theme
+ON theme.themeId = movieSubThemeTId
+WHERE movie.movieYear < 2000 AND theme.themeName = 'Space';
+
+SELECT * FROM rateCategory ORDER BY rateCategory.rateCategoryTitle DESC; -- DESC order
+SELECT * FROM rateCategory LIMIT 2; -- Limit items
+
+-- Wats your mode? Get categories
+SELECT theme.themeName,
+CASE
+WHEN theme.themeName = 'Horror' THEN 'Scare me'
+WHEN theme.themeName = 'Ai' OR theme.themeName = 'Robots' THEN 'Give me robots'
+ELSE 'Whatever'
+END AS 'Mood'
+FROM theme;
+
+
+-- Get primaryTheme on movies
+SELECT movie.movieTitle, theme.themeName AS 'PrimaryTheme'
+FROM theme
+INNER JOIN moviePrimaryTheme
+ON theme.themeId = moviePrimaryTheme.moviePrimaryThemeTId
+INNER JOIN movie
+ON movie.movieId = moviePrimaryTheme.moviePrimaryThemeMId;
+
+-- Get all primaryThemes with and without movies
+SELECT theme.themeName AS 'PrimaryTheme', movie.movieTitle
+FROM theme
+LEFT JOIN moviePrimaryTheme
+ON theme.themeId = moviePrimaryTheme.moviePrimaryThemeTId
+LEFT JOIN movie
+ON movie.movieId = moviePrimaryTheme.moviePrimaryThemeMId;
+-- WHERE movie.movieTitle IS NULL;
+-- WHERE movie.movieTitle IS NOT NULL;
+
+-- Get subThemes on movies
+SELECT movie.movieTitle, theme.themeName AS 'SubTheme'
+FROM movie
+LEFT JOIN movieSubTheme
+ON movie.movieId = movieSubTheme. movieSubThemeMId
+LEFT JOIN theme
+ON theme.themeId = movieSubTheme. movieSubThemeTId;
+
+-- Show primaryTheme and subTheme on movies
+SELECT movie.movieTitle, pT.themeName AS 'PrimaryTheme', sT.themeName AS 'SubTheme'
+FROM movie
+LEFT JOIN moviePrimaryTheme
+ON movie.movieId = moviePrimaryTheme.moviePrimaryThemeMId
+LEFT JOIN movieSubTheme
+ON movie.movieId = movieSubTheme.movieSubThemeMId
+LEFT JOIN theme AS pT
+ON pT.themeId = moviePrimaryTheme.moviePrimaryThemeTId
+LEFT JOIN theme AS sT
+ON sT.themeId = movieSubTheme.movieSubThemeTId;
+
+-- Get crewMembers with jobTitles
+SELECT crewMember.crewMemberName, crewMemberJob.crewMemberJobTitle
+FROM crewMemberJob
+INNER JOIN movieCrewMember
+ON crewMemberJob.crewMemberJobId = movieCrewMember.crewMemberCMJId
+INNER JOIN crewMember
+ON crewMember.crewMemberId = movieCrewMember.movieCrewMemberCMId
+ORDER BY crewMemberJob.crewMemberJobTitle;
+-- ORDER BY crewMember.crewMemberName;
+
+-- Get movie and crew with job-title, order by movie
+SELECT movie.movieTitle, crewMember.crewMemberName, crewMemberJob.crewMemberJobTitle
+FROM crewMember
+INNER JOIN movieCrewMember
+ON crewMember.crewMemberId = movieCrewMember.movieCrewMemberCMId
+INNER JOIN crewMemberJob
+ON crewMemberJob.crewMemberJobId = movieCrewMember.crewMemberCMJId
+INNER JOIN movie
+ON movie.movieId = movieCrewMember.movieCrewMemberMId
+ORDER BY movie.movieTitle;
+
+-- Get movie and crew with job-title order by crewMemberName
+SELECT crewMember.crewMemberName, crewMemberJob.crewMemberJobTitle, movie.movieTitle
+FROM movieCrewMember
+INNER JOIN crewMember
+ON crewMember.crewMemberId = movieCrewMember.movieCrewMemberCMId
+INNER JOIN movie
+ON movie.movieId = movieCrewMember.movieCrewMemberMId
+INNER JOIN crewMemberJob
+ON crewMemberJob.crewMemberJobId = movieCrewMember.crewMemberCMJId
+ORDER BY crewMember.crewMemberName;
+
+
+-- Get all movieCategoryRatings
+SELECT movie.movieTitle, rateCategory.rateCategoryTitle, movieCategoryRating.voteRate, user.userName
+FROM rateCategory
+INNER JOIN movieCategoryRating
+ON rateCategory.rateCategoryId = movieCategoryRating.movieRateCategoryRCId
+INNER JOIN user
+ON user.userId = movieCategoryRating.movieRateCategoryUId
+INNER JOIN movie
+ON movie.movieId = movieCategoryRating.movieRateCategoryMId;
+
+
+SELECT movie.movieTitle, rateCategory.rateCategoryTitle, movieCategoryRating.voteRate, user.userName
+FROM movieCategoryRating
+LEFT JOIN rateCategory
+ON rateCategory.rateCategoryId = movieCategoryRating.movieRateCategoryRCId
+INNER JOIN user
+ON user.userId = movieCategoryRating.movieRateCategoryUId
+INNER JOIN movie
+ON movie.movieId = movieCategoryRating.movieRateCategoryMId;
+
+-- Get all movieCategoryRatings from specific user(FROM rateCategory)
+SELECT movie.movieTitle, rateCategory.rateCategoryTitle, movieCategoryRating.voteRate, user.userName
+FROM rateCategory
+INNER JOIN movieCategoryRating
+ON rateCategory.rateCategoryId = movieCategoryRating.movieRateCategoryRCId
+INNER JOIN user
+ON user.userId = movieCategoryRating.movieRateCategoryUId
+INNER JOIN movie
+ON movie.movieId = movieCategoryRating.movieRateCategoryMId
+WHERE movieCategoryRating.movieRateCategoryUId = 1;
+
+-- Get all movieCategoryRatings from specific user(FROM movieCategoryRating)
+SELECT movie.movieTitle, rateCategory.rateCategoryTitle, movieCategoryRating.voteRate, user.userName
+FROM movieCategoryRating
+LEFT JOIN rateCategory
+ON rateCategory.rateCategoryId = movieCategoryRating.movieRateCategoryRCId
+LEFT JOIN user
+ON user.userId = movieCategoryRating.movieRateCategoryUId
+LEFT JOIN movie
+ON movie.movieId = movieCategoryRating.movieRateCategoryMId
+WHERE movieCategoryRating.movieRateCategoryUId = 2;
+
+
+-- Avg-rating all users, specific movie
+SELECT movie.movieTitle, AVG(movieCategoryRating.voteRate) AS AverageRateAllUser
+FROM movieCategoryRating
+INNER JOIN movie
+ON movieCategoryRating.movieRateCategoryMId = movie.movieId
+WHERE movieCategoryRating.movieRateCategoryMId = 1;
+
+
+-- Avg-rate specific movie on user (get with id:s)
+SELECT movie.movieTitle, AVG(movieCategoryRating.voteRate) AS AverageRateUser, user.userName
+FROM movieCategoryRating
+INNER JOIN movie
+ON movie.movieId = movieCategoryRating.movieRateCategoryMId
+INNER JOIN user
+ON user.userId = movieCategoryRating.movieRateCategoryUId
+WHERE movieCategoryRating.movieRateCategoryUId = 1 AND movieCategoryRating.movieRateCategoryMId = 2;
+
+-- Avg-rate spec movie on user (get with string-values)
+SELECT movie.movieTitle, AVG(movieCategoryRating.voteRate) AS AverageRate, user.userName
+FROM movieCategoryRating
+INNER JOIN movie
+ON movie.movieId = movieCategoryRating.movieRateCategoryMId
+INNER JOIN user
+ON user.userId = movieCategoryRating.movieRateCategoryUId
+WHERE user.userName = 'Grodan Boll' AND movie.movieTitle = 'StarWars IV';
+
+-- Create view
+CREATE VIEW PrimaryThemesView AS
+SELECT movie.movieTitle, theme.themeName AS 'PrimaryTheme'
+FROM theme
+INNER JOIN moviePrimaryTheme
+ON theme.themeId = moviePrimaryTheme.moviePrimaryThemeTId
+INNER JOIN movie
+ON movie.movieId = moviePrimaryTheme.moviePrimaryThemeMId;
+
+SELECT * FROM PrimaryThemesView;
+DROP VIEW PrimaryThemesView;
+
+
+SELECT * FROM movie;
+SELECT * FROM user;
+SELECT * FROM movieCrewMember;
+SELECT * FROM crewMember;
+SELECT * FROM crewMemberJob;
+SELECT * FROM rateCategory;
+SELECT * FROM movieCategoryRating;
+
+-- Delete and drop
+DELETE FROM movie WHERE movieTitle = 'Interstellar';
+DROP TABLE movie;
+
+
+
+
+
+
